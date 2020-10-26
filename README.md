@@ -1,5 +1,5 @@
 # Atomic Text
-Quick and dirty tool to scroll messages on an M5 Atom.
+Quick and dirty tool to scroll messages on an M5Stack Atom.
 
 ## Usage
 Currently the text is hardcoded as message inside main.cpp however the tool should easily be
