@@ -1,6 +1,7 @@
 #include "renderEngine.h"
+#include <M5Atom.h>
 
-String message = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+String message = "ATOMIC TEXT - COPYRIGHT SILENT SOFTWARE 2020 ";
 bool stopAnim = false;
 bool started = false;
 

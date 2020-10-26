@@ -1,12 +1,17 @@
 #pragma once
-#include "M5Atom.h"
 #include "dict.h"
+#include "renderEngine.h"
+#include <FastLED.h>
+#include <M5Atom.h>
+CRGB leds[25];
 
 const int HEADER_LENGTH = 2;
 const int RGB_FIELDS = 3;
 const int COLS_PER_CHAR = 6;
 const int ROWS_PER_CHAR = 5;
 const int PIXELS_PER_CHAR = COLS_PER_CHAR*ROWS_PER_CHAR;
+const int ATOM_X_LEDS = 5;
+const int ATOM_Y_LEDS = 5;
 
 int copyLetterToOutput (const bool* letter, bool* output, int startIndex) {
     for (int i=0; i<30; ++i) {
@@ -15,19 +20,7 @@ int copyLetterToOutput (const bool* letter, bool* output, int startIndex) {
     return startIndex;
 }
 
-void fontArrayToRGB(bool* data, uint8_t* rgbData, int letters) { 
-    int pixelCount = PIXELS_PER_CHAR * letters;
-    int rgbCount = 0;
-    rgbData[rgbCount++] = COLS_PER_CHAR * letters;
-    rgbData[rgbCount++] = ROWS_PER_CHAR;
-    for (int i=0; i<pixelCount; ++i) {
-        rgbData[rgbCount++] = data[i]?0xFF:0x00;
-        rgbData[rgbCount++] = data[i]?0xFF:0x00;
-        rgbData[rgbCount++] = data[i]?0xFF:0x00;
-    }
-}
-
-void transposeToAtomLayout(const bool* data, bool* reformattedData, int letterCount) {
+void transposeToPixelRowsLayout(const bool* data, bool* reformattedData, int letterCount) {
     int count = 0;
 
     // For each row in the final output
@@ -105,27 +98,46 @@ void stringToFontArray (String text, bool* output, int pixelCount) {
     }
 }
 
-void textToRGB(String text, uint8_t* rgbData, int pixelCount) {
-    bool reformattedArray[pixelCount];
-    {
-        bool fontArray[pixelCount];
-        stringToFontArray(text, fontArray, pixelCount);
-        transposeToAtomLayout(fontArray, reformattedArray, text.length());
+void textToPixelData(String text, bool* pixelData, int pixelCount) {
+    bool fontArray[pixelCount];
+    stringToFontArray(text, fontArray, pixelCount);
+    transposeToPixelRowsLayout(fontArray, pixelData, text.length());
+}
+
+void renderWindow(bool* rgbData, int rowLength, int x, int y, int width, int height) {
+    int ledCount = 0;
+    int offset = (rowLength*y)+x;
+    for (int j=0; j<height; j++) {
+        for (int i=0; i<width; i++) {
+            int currentLed = offset+i;
+            // If we exceed the end of the rgbData row go back to the start of it 
+            // to pick up enough data to scroll the last character off the display
+            if (x+i>= rowLength) {
+                currentLed -= rowLength;
+            }
+            leds[ledCount++] = rgbData[currentLed]?0xFFFFFF:0x000000;
+        }
+        offset+=rowLength;
     }
-    fontArrayToRGB(reformattedArray, rgbData, text.length());
+    FastLED.show();
 }
 
 void displayText(String text, bool (*stopFnPtr)()) {
+    
+    FastLED.addLeds<WS2812B, 27>(leds, 25);
+    int rowLength = COLS_PER_CHAR*text.length();
     int pixelCount = PIXELS_PER_CHAR*text.length();
-    int rgbLength = HEADER_LENGTH+(RGB_FIELDS*pixelCount);
-    uint8_t rgbData[rgbLength];
-    textToRGB(text, rgbData, pixelCount);
-    M5.dis.animation(rgbData, 150, LED_DisPlay::kMoveLeft, -1);
+    bool rgbData[pixelCount];
+    textToPixelData(text, rgbData, pixelCount);
+
+    int x = 0;
     while (1) {
-        if ((*stopFnPtr)()) {
-            return;
+        renderWindow(rgbData, rowLength, x, 0, ATOM_X_LEDS, ATOM_Y_LEDS);
+        delay(160);
+        ++x;
+        if (x > rowLength) {
+            x=0;
         }
-        delay(1000);
     }
 }
 
