@@ -3,15 +3,13 @@
 #include "renderEngine.h"
 #include <FastLED.h>
 #include <M5Atom.h>
-CRGB leds[25];
 
-const int HEADER_LENGTH = 2;
-const int RGB_FIELDS = 3;
 const int COLS_PER_CHAR = 6;
 const int ROWS_PER_CHAR = 5;
 const int PIXELS_PER_CHAR = COLS_PER_CHAR*ROWS_PER_CHAR;
 const int ATOM_X_LEDS = 5;
 const int ATOM_Y_LEDS = 5;
+CRGB leds[ATOM_X_LEDS*ATOM_Y_LEDS];
 
 int copyLetterToOutput (const bool* letter, bool* output, int startIndex) {
     for (int i=0; i<30; ++i) {
