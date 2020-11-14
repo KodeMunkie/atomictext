@@ -7,7 +7,7 @@ Quick and dirty tool to scroll messages on an M5Stack Atom.
 
 You can also use GET (e.g. ?text=HELLO) but spaces are treated as URL ENCODED so not recommended.
 
-## LIMITATIONS
+## Limitations
 Only horziontal scroll to the left is supported currently as earlier revisions used the
 official unstable M5Atom library 0.0.1 animation API which despite supporting scroll in many 
 directions had memory corruption issues and would crash.
