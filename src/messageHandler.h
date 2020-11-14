@@ -15,31 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "WString.h"
-#include "stdint.h"
-#include <FastLED.h>
-
-const int COLS_PER_CHAR = 6;
-const int ROWS_PER_CHAR = 5;
-const int PIXELS_PER_CHAR = COLS_PER_CHAR*ROWS_PER_CHAR;
-const int ATOM_X_LEDS = 5;
-const int ATOM_Y_LEDS = 5;
-const int SCROLL_PAUSE = 160;
+/**
+ * Initialise the HTTP Server
+ */
+void setupServer(const char* ssid, const char* password, void(*setMessage)(String));
 
 /**
- * Initialise the engine with a scroll pause (in milliseconds) and a palette
+ * Handle client request
  */
-void setupEngine(int pause, CRGBPalette16 palette);
-
-/**
- * Resets the banner's scroll (window) position
- */
-void resetPosition();
-
-/**
- * Renders an individual frame (window) of the text at the 
- * given x "pixel" coordinate.
- * @param rowLength the number of columns in the text data
- * @param text the message to render
- */
-void renderFrame(int rowLength, String text);
+void handleClient();

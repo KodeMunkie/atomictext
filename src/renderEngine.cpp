@@ -15,26 +15,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#pragma once
 #include "dict.h"
 #include "renderEngine.h"
 #include <FastLED.h>
-#include <M5Atom.h>
 
-const int COLS_PER_CHAR = 6;
-const int ROWS_PER_CHAR = 5;
-const int PIXELS_PER_CHAR = COLS_PER_CHAR*ROWS_PER_CHAR;
-const int ATOM_X_LEDS = 5;
-const int ATOM_Y_LEDS = 5;
 CRGB leds[ATOM_X_LEDS*ATOM_Y_LEDS];
 CRGBPalette16 currentPalette = RainbowColors_p;
-TBlendType currentBlending = LINEARBLEND;
-int scrollPause = 160;
+TBlendType currentBlending = NOBLEND;
+int scrollPause = SCROLL_PAUSE;
+int xPositionInRgbData = 0;
+int8_t colourIndex = 0;
 
 /**
  * Initialise the engine with a scroll pause (in milliseconds) and a palette
  */
-void initialise(int pause = 160, CRGBPalette16 palette = RainbowColors_p) {
+void setupEngine(int pause, CRGBPalette16 palette) {
 
     // M5Atom specific - this framework is not tested on anything else
     FastLED.addLeds<WS2812B, 27>(leds, 25);
@@ -179,31 +174,34 @@ void renderWindow(bool* rgbData, int rowLength, int x, int y = 0, int width = AT
         offset+=rowLength;
     }
     FastLED.show();
+    delay(scrollPause);
 }
 
 /**
- * Displays the specified text as a scrolling banner on an M5Atom
+ * Renders an individual frame (window) of the text at the 
+ * given x "pixel" coordinate.
+ * @param rowLength the number of columns in the text data
+ * @param text the message to render
  */
-void displayText(String text) {
-    int rowLength = COLS_PER_CHAR*text.length();
+void renderFrame(int rowLength, String text) {
     int pixelCount = PIXELS_PER_CHAR*text.length();
     bool rgbData[pixelCount];
+    // TODO: Inefficient - re-renders the entire text each time. Find a way to
+    // improve this without memory going out of scope (or using heap)
     textToPixelData(text, rgbData, pixelCount);
+    CRGB colour = ColorFromPalette(currentPalette, colourIndex, 40, currentBlending);
+    renderWindow(rgbData, rowLength, xPositionInRgbData, 0, ATOM_X_LEDS, ATOM_Y_LEDS, colour);
+     // Increment the banner's frame window position
+    ++xPositionInRgbData;
+    colourIndex+=3;
 
-    int x = 0;
-    int index = 0;
-    while (1) {
-        // TODO: Just new colour per render window - pretty limited.
-        // WARNING: Value of 40 for brightness magic numbered deliberately 
-        // see https://forum.m5stack.com/topic/1964/atom-matrix-led-power-clarification
-        CRGB colour = ColorFromPalette(currentPalette, index, 40, currentBlending);
-        index+=3; // unbound as u8int
-        renderWindow(rgbData, rowLength, x, 0, ATOM_X_LEDS, ATOM_Y_LEDS, colour);
-        delay(scrollPause);
-        ++x;
-        if (x > rowLength) {
-            x=0;
-        }
+    // Reset the position if the length of the banner is exceeded
+    if (xPositionInRgbData > rowLength) {
+        xPositionInRgbData=0;
     }
+}
+
+void resetPosition() {
+    xPositionInRgbData = 0;
 }
 

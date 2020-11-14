@@ -16,22 +16,49 @@
  */
 
 #include "renderEngine.h"
+#include "messageHandler.h"
+#include "main.h"
 #include <M5Atom.h>
 
-String message = "ATOMIC TEXT - SILENT SOFTWARE 2020 ";
- 
 /**
- * Initialise the Atom, kick off animation thread
+ * SET YOUR DEFAULTS HERE!
+ */ 
+const char SSID[] = "<YOUR SSID>";
+const char PASSWORD[] = "<YOUR PASSWORD>";
+const String DEFAULT_MESSAGE = "ATOMIC TEXT - SILENT SOFTWARE 2020";
+
+String currentMessage = DEFAULT_MESSAGE;
+
+/**
+ * Call back to set the message to be displayed
+ * If there is no message in the post (an error) sets it to the default
  */
-void setup()
-{
-    M5.begin(true, false, true);
-    initialise(160, RainbowColors_p);
-    displayText(message); 
+void setMessage(String newMessage) {
+    if (newMessage.length() == 0) {
+        newMessage = DEFAULT_MESSAGE;
+    }
+    // Add whitespace so next message doesn't merge with this one
+    currentMessage = newMessage+" ";
+    resetPosition();
 }
 
-void loop()
-{
-    // TODO: Wifi/POST update of message     
-    M5.update();
+/**
+ * Initialise the M5Atom, Wifi/HTTP Server and the LED rendering engine
+ */
+void setup() {
+    M5.begin(false, false, true);
+    setupServer(SSID, PASSWORD, setMessage);
+    setupEngine(200, RainbowColors_p);
+}
+
+void loop() {   
+    
+    // Determine how long a row of text is in pixels
+    int rowLength = COLS_PER_CHAR*currentMessage.length();
+
+    // Render the a frame of the banner (message)
+    renderFrame(rowLength, currentMessage);
+
+    // Listen for a HTTP POST
+    handleClient();
 }
