@@ -1,6 +1,8 @@
 # Atomic Text
 Quick and dirty tool to scroll messages on an M5Stack Atom.
 
+![](atomictext.jpg)
+
 ## Usage
 1) Set your WiFi network SSID and PASSWORD in main.cpp.
 1) POST to the endpoint http://atomictext.local/m with the KEY "text" and your message as the VALUE.
