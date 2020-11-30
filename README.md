@@ -14,12 +14,14 @@ You can also use GET (e.g. ?text=HELLO) but spaces are treated as URL ENCODED so
 Note: mobile devices may not support mDNS which is used to set the domain name "atomictext.local" on your network - so you may need to find the IP address on your router instead.
 
 ## Limitations
-Only horziontal scroll to the left is supported currently as earlier revisions used the
+* Only horziontal scroll to the left is supported currently as earlier revisions used the
 official unstable M5Atom library 0.0.1 animation API which despite supporting scroll in many 
 directions had memory corruption issues and would crash.
-The font used in this library could do with work - any improvements on design and usage 
-appreciated (bear in mind it's 5x5 pixels)!
-There appears to be an interrupt bug causing the LEDs to flicker slighlty on scroll - I've not 
+
+* The font used in this library could do with work - any improvements on design and usage 
+appreciated (bear in mind it's 5x5 pixels)! You are restricted to the alphabet in [dict.h](https://github.com/KodeMunkie/atomictext/blob/main/src/dict.h).
+
+* There appears to be an interrupt bug causing the LEDs to flicker slightly on scroll - I've not 
 yet identified what setting or code is causing this issue (it doesn't appear to be a scope issue).
 
 ## TODO
