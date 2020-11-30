@@ -4,10 +4,14 @@ Quick and dirty tool to scroll messages on an M5Stack Atom.
 ![](atomictext.jpg)
 
 ## Usage
+1) Open the source folder in the [PlatformIO](https://platformio.org/) IDE
 1) Set your WiFi network SSID and PASSWORD in main.cpp.
-1) POST to the endpoint http://atomictext.local/m with the KEY "text" and your message as the VALUE.
+1) Upload using the PlatformIO Upload button (which will also do a build first).
+1) POST to the endpoint http://atomictext.local/m with the KEY "text" and your message as the VALUE. 
 
 You can also use GET (e.g. ?text=HELLO) but spaces are treated as URL ENCODED so not recommended.
+
+Note: mobile devices may not support mDNS which is used to set the domain name "atomictext.local" on your network - so you may need to find the IP address on your router instead.
 
 ## Limitations
 Only horziontal scroll to the left is supported currently as earlier revisions used the
