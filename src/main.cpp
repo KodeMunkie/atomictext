@@ -28,6 +28,7 @@ const char PASSWORD[] = "<YOUR PASSWORD>";
 const String DEFAULT_MESSAGE = "ATOMIC TEXT - SILENT SOFTWARE 2020";
 
 String currentMessage = DEFAULT_MESSAGE;
+CRGB currentRgb = CRGB::Black;
 
 /**
  * Call back to set the message to be displayed
@@ -42,12 +43,33 @@ void setMessage(String newMessage) {
     resetPosition();
 }
 
+void setRgb(String rgb) {
+    currentRgb = CRGB(strtol(&rgb[0], NULL, 0));
+}
+
+/**
+ * Hotfix for M5Atom 0.0.1 lib that initialises
+ * any wifi/bt activity on the same core as the
+ * display resulting in flicker during scroll.
+ */
+void setupPatchM5AtomLibToFixFlicker() {
+    
+    // Disable the display
+    M5.begin(false, false, false);
+
+    // Enable it but on a different core
+    M5.dis.setTaskName("LEDs");
+    M5.dis.setTaskPriority(2);
+    M5.dis.setCore(1);
+    M5.dis.start();
+}
+
 /**
  * Initialise the M5Atom, Wifi/HTTP Server and the LED rendering engine
  */
 void setup() {
-    M5.begin(false, false, true);
-    setupServer(SSID, PASSWORD, setMessage);
+    setupPatchM5AtomLibToFixFlicker();
+    setupServer(SSID, PASSWORD, setMessage, setRgb);
     setupEngine(200, RainbowColors_p);
 }
 
@@ -57,7 +79,7 @@ void loop() {
     int rowLength = COLS_PER_CHAR*currentMessage.length();
 
     // Render the a frame of the banner (message)
-    renderFrame(rowLength, currentMessage);
+    renderFrame(rowLength, currentMessage, currentRgb);
 
     // Listen for a HTTP POST
     handleClient();

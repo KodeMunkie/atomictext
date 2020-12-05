@@ -18,7 +18,7 @@
 /**
  * Initialise the HTTP Server
  */
-void setupServer(const char* ssid, const char* password, void(*setMessage)(String));
+void setupServer(const char* ssid, const char* password, void(*setMessage)(String), void(*rgbCallback)(String));
 
 /**
  * Handle client request

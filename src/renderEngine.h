@@ -42,4 +42,4 @@ void resetPosition();
  * @param rowLength the number of columns in the text data
  * @param text the message to render
  */
-void renderFrame(int rowLength, String text);
+void renderFrame(int rowLength, String text, CRGB rgb);
