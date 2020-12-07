@@ -22,7 +22,7 @@
 
 const String CONTENT_TYPE = "text/plain";
 const String MESSAGE_KEY = "text";
-const String RGB_KEY = "GRB"; // Actually GRB order :(
+const String RGB_KEY = "grb"; // Actually GRB order not RGB - hardware restriction
 
 ESP32WebServer server(80);
 void(*setMessage)(String);
