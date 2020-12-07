@@ -22,9 +22,11 @@
 
 const String CONTENT_TYPE = "text/plain";
 const String MESSAGE_KEY = "text";
+const String RGB_KEY = "GRB"; // Actually GRB order :(
 
 ESP32WebServer server(80);
 void(*setMessage)(String);
+void(*setRgb)(String);
 
 /**
  * Handle the message post request and 
@@ -34,6 +36,9 @@ void handleMessage() {
   for (int i=0; i<server.args(); ++i) {
     if (server.arg(i).length() > 0 && MESSAGE_KEY.equalsIgnoreCase(server.argName(i))) {
       setMessage(server.arg(i));
+    }
+    if (server.arg(i).length() > 0 && RGB_KEY.equalsIgnoreCase(server.argName(i))) {
+      setRgb(server.arg(i));
     }
   }
   server.send(200, CONTENT_TYPE, "Message uploaded!\n\n");
@@ -49,8 +54,9 @@ void handleNotFound() {
 /**
  * Setup the WiFI connection and HTTP server handlers
  */ 
-void setupServer(const char* ssid, const char* password, void(*callback)(String)) {
+void setupServer(const char* ssid, const char* password, void(*callback)(String), void(*rgbCallback)(String)) {
   setMessage = callback;
+  setRgb = rgbCallback;
   WiFi.begin(ssid, password);
 
   // Wait for connection

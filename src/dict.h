@@ -17,7 +17,7 @@
 
 extern const bool WHITESPACE[30] = {false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false};
 extern const bool A[30] = {true,true,true,true,true,false,true,false,false,false,true,false,true,false,false,false,true,false,true,true,true,true,true,false,true,false,false,false,true,false};
-extern const bool B[30] = {true,true,true,true,true,false,true,false,false,false,true,false,true,true,true,true,false,false,true,false,false,false,true,false,true,true,true,true,true,false};
+extern const bool B[30] = {true,true,true,true,false,false,true,false,false,false,true,false,true,true,true,true,false,false,true,false,false,false,true,false,true,true,true,true,false,false};
 extern const bool C[30] = {true,true,true,true,true,false,true,false,false,false,false,false,true,false,false,false,false,false,true,false,false,false,false,false,true,true,true,true,true,false};
 extern const bool D[30] = {true,true,true,true,false,false,true,false,false,false,true,false,true,false,false,false,true,false,true,false,false,false,true,false,true,true,true,true,false,false};
 extern const bool E[30] = {true,true,true,true,true,false,true,false,false,false,false,false,true,true,true,true,false,false,true,false,false,false,false,false,true,true,true,true,true,false};

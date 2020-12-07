@@ -21,7 +21,8 @@
 
 CRGB leds[ATOM_X_LEDS*ATOM_Y_LEDS];
 CRGBPalette16 currentPalette = RainbowColors_p;
-TBlendType currentBlending = NOBLEND;
+TBlendType currentBlending = LINEARBLEND;
+int SAFE_BRIGHTNESS = 20;
 int scrollPause = SCROLL_PAUSE;
 int xPositionInRgbData = 0;
 int8_t colourIndex = 0;
@@ -33,6 +34,7 @@ void setupEngine(int pause, CRGBPalette16 palette) {
 
     // M5Atom specific - this framework is not tested on anything else
     FastLED.addLeds<WS2812B, 27>(leds, 25);
+    FastLED.setBrightness(SAFE_BRIGHTNESS);
     scrollPause = pause;
     currentPalette = palette;
 }
@@ -160,7 +162,6 @@ void textToPixelData(String text, bool* pixelData, int pixelCount) {
 void renderWindow(bool* rgbData, int rowLength, int x, int y = 0, int width = ATOM_X_LEDS, int height = ATOM_Y_LEDS, CRGB colour = CRGB::WhiteSmoke) {
     int ledCount = 0;
     int offset = (rowLength*y)+x;
-
     for (int j=0; j<height; j++) {
         for (int i=0; i<width; i++) {
             int currentLed = offset+i;
@@ -183,13 +184,13 @@ void renderWindow(bool* rgbData, int rowLength, int x, int y = 0, int width = AT
  * @param rowLength the number of columns in the text data
  * @param text the message to render
  */
-void renderFrame(int rowLength, String text) {
+void renderFrame(int rowLength, String text, CRGB rgb) {
     int pixelCount = PIXELS_PER_CHAR*text.length();
     bool rgbData[pixelCount];
     // TODO: Inefficient - re-renders the entire text each time. Find a way to
     // improve this without memory going out of scope (or using heap)
     textToPixelData(text, rgbData, pixelCount);
-    CRGB colour = ColorFromPalette(currentPalette, colourIndex, 40, currentBlending);
+    CRGB colour = rgb?rgb:ColorFromPalette(currentPalette, colourIndex);
     renderWindow(rgbData, rowLength, xPositionInRgbData, 0, ATOM_X_LEDS, ATOM_Y_LEDS, colour);
      // Increment the banner's frame window position
     ++xPositionInRgbData;
