@@ -13,7 +13,7 @@ Quick and dirty tool to scroll messages on an M5Stack Atom.
 Note: mobile devices may not support mDNS which is used to set the domain name "atomictext.local" on your network - so you may need to find the IP address on your router instead.
 
 ## Limitations
-* Currentyu only horziontal scroll to the left is supported as [earlier revisions used the
+* Currently only horziontal scroll to the left is supported as [earlier revisions used the
 official M5Atom library 0.0.1 animation API](https://github.com/KodeMunkie/atomictext/commit/275d73a406d903be5e75ddd3d664547467dab560#diff-25a6634263c1b1f6fc4697a04e2b9904ea4b042a89af59dc93ec1f5d44848a26) which despite supporting scroll in many 
 directions appears to have a memory corruption issue and would crash with messages of more than
 a few words (about 20 characters).
