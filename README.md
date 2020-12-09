@@ -23,4 +23,4 @@ appreciated (bear in mind it's 5x5 pixels)! You are restricted to the alphabet i
 
 * There _was_ an interrupt bug causing the LEDs to flicker slightly on scroll caused by the WiFi and display threads running on the same core which is [another 
 limitation in the M5Atom library 0.0.1](https://github.com/m5stack/M5Atom/issues/15). To workaround it the display is initialised directly in setup() and the
-core explicitly chosen, instead of using M5.begin() for this purpose. This may caused incompatibility when the M5Atom library updates if not removed.
+core explicitly chosen, instead of using M5.begin() for this purpose. This may cause incompatibility when the M5Atom library is updated if the patch is not removed.
