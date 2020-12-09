@@ -1,5 +1,5 @@
 # Atomic Text
-Quick and dirty tool to scroll messages on an M5Stack Atom.
+Quick and dirty tool to scroll messages posted over HTTP on an M5Stack Atom.
 
 ![](atomictext.jpg)
 
